@@ -1,13 +1,19 @@
 class Memorial {
   constructor(x, y, team) {
+    this.init = createVector(x, y);
     this.pos = createVector(x, y);
     this.soldiers = [];
-    this.count = 5;
+    this.count = battleCount;
     this.team = team;
+
+    this.physics = createVector(200, 0, 0);
+    this.motion = createVector(4, 1, 60);
+    this.target = width - 100;
+
+    this.collapsed = false;
   }
 
   testPromotion(soldier) {
-    
     if(soldier.team != this.team)
       return;
       
@@ -15,7 +21,6 @@ class Memorial {
       this.soldiers.push(soldier.copy());
     } else {
 
-      //if(this.soldiers.length >= this.count)
       this.sort();
 
       let smallest = Infinity;
@@ -41,6 +46,29 @@ class Memorial {
         }
       }
     }
+  }
+
+  updateSmooth() {
+    this.sort();
+
+     if(this.collapsed)
+      this.target =  147;
+    else
+      this.target =  -15;
+
+    for(let i = 0; i < this.soldiers.length; i++) {
+      let s = this.soldiers[i];
+      smoothFollow(this.soldiers.indexOf(s) * (height/2/(battleCount+1)) - 20, s.memPhysics, s.memMotion);
+    }
+    
+    for(let i = 0; i < this.soldiers.length; i++) {
+      let s = this.soldiers[i];
+      doPhysics(s.memPhysics);
+    } 
+
+    smoothFollow(this.target, this.physics, this.motion);
+    doPhysics(this.physics);
+
   }
 
   sort() {
@@ -81,19 +109,29 @@ class Memorial {
   }
 
   show() {
-    push();
-    translate(this.pos.x, this.pos.y);
-    fill(15);
-    rect(-5, -15, 150, this.count * 15);
+    this.sort();
 
-    textSize(11);
+    push();
+    translate(width - 170, !this.team ? 90 : height/2 + 80);
+
+    stroke(this.team ? greenColor : redColor);
+    fill(this.team ? color(hue(greenColor), saturation(greenColor), 15) : color(hue(redColor), saturation(redColor), 15));
+    strokeWeight(2);
+    rect(this.physics.x-40, -65, 215, this.count * 0.47 * (height/(battleCount)) );
+    noStroke();
+
+    textSize(12);
     for (let i = 0; i < this.soldiers.length; i++) {
       let s = this.soldiers[i];
+      let mag = 15;
+      let fSpace = map(s.memPhysics.x, 0, this.count * (height/(battleCount+3)), -mag, 3*mag);
+
       fill(s.startCol);
       noStroke();
-      text(s.killCount + ' : ' + s.firstName + ' ' + s.lastName + ' ' + s.age, 0, i * 12);
-    }
+      text(s.killCount + ' : ' + s.firstName + ' ' + s.lastName + ' ' + s.age, this.physics.x + 25, s.memPhysics.x);
 
+      s.showFace(this.physics.x + 15, s.memPhysics.x + 50 + fSpace);
+    }
     pop();
   }
 }

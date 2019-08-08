@@ -99,58 +99,63 @@ class Soldier {
         this.battle.sold2.myTurn = false;
       }
 
-    // this.facePic = int(random(facePics.length));
-    // this.hairPic = int(random(hairPics.length));
-    // this.mouthPic = int(random(mouthPics.length));
-    // this.eyePic = int(random(eyePics.length));
+      this.memPhysics = createVector(300, 0, 0);
+      this.memMotion = createVector(2, 1, 25);
+      this.memTarget = 0;
 
-    // //this.eyePic = 13; //0-9
-    // eOff[0] = createVector(13, 18);
-    // eOff[1] = createVector(18, 18);
-    // eOff[2] = createVector(13, 4);
-    // eOff[3] = createVector(10, 25);
-    // eOff[4] = createVector(-2, 22);
-    // eOff[5] = createVector(12, 18);
-    // eOff[6] = createVector(12, 22);
-    // eOff[7] = createVector(14, 20);
-    // eOff[8] = createVector(12, 20);
-    // eOff[9] = createVector(14, 20);
-    // eOff[10] = createVector(14, 20);
-    // eOff[11] = createVector(7, 20);
-    // eOff[12] = createVector(9, 23);
-    // eOff[13] = createVector(0, 23);
+      this.facePic = int(random(facePics.length));
+      this.hairPic = int(random(hairPics.length));
+      this.mouthPic = int(random(mouthPics.length));
+      this.eyePic = int(random(eyePics.length));
 
-    // //this.mouthPic = 15; //0-10
-    // mOff[0] = createVector(12, 40);
-    // mOff[1] = createVector(-1.5, 18);
-    // mOff[2] = createVector(11, 43);
-    // mOff[3] = createVector(17, 38);
-    // mOff[4] = createVector(12, 40);
-    // mOff[5] = createVector(15, 42);
-    // mOff[6] = createVector(12, 42);
-    // mOff[7] = createVector(23, 39);
-    // mOff[8] = createVector(10, 40);
-    // mOff[9] = createVector(16, 40);
-    // mOff[10] = createVector(23, 40);
-    // mOff[11] = createVector(7.5, 35);
-    // mOff[12] = createVector(14.25, 37);
-    // mOff[13] = createVector(14.25, 35);
-    // mOff[14] = createVector(14.25, 40);
-    // mOff[15] = createVector(17, 42);
+    //this.eyePic = 11; //0-9
+    eOff[0] = createVector(13, 18);
+    eOff[1] = createVector(18, 18);
+    eOff[2] = createVector(13, 4);
+    eOff[3] = createVector(10, 25);
+    eOff[4] = createVector(-2, 22);
+    eOff[5] = createVector(12, 18);
+    eOff[6] = createVector(12, 22);
+    eOff[7] = createVector(14, 20);
+    eOff[8] = createVector(12, 20);
+    eOff[9] = createVector(14, 20);
+    eOff[10] = createVector(14, 20);
+    eOff[11] = createVector(7, 20);
+    eOff[12] = createVector(9, 23);
+    eOff[13] = createVector(0, 23);
 
-    // //this.hairPic = 11; //0-10
-    // hOff[0] = createVector(-2.5, -6);
-    // hOff[1] = createVector(-2, -6);
-    // hOff[2] = createVector(5, -20);
-    // hOff[3] = createVector(-5, -4);
-    // hOff[4] = createVector(7, -2);
-    // hOff[5] = createVector(-4, -11);
-    // hOff[6] = createVector(-32, -12);
-    // hOff[7] = createVector(-4, -18);
-    // hOff[8] = createVector(4.75, -1);
-    // hOff[9] = createVector(-5, -10);
-    // hOff[10] = createVector(-5, -16);
-    // hOff[11] = createVector(-1, -1);
+    //this.mouthPic = 1; //0-10
+    mOff[0] = createVector(12, 40);
+    mOff[1] = createVector(-1.5, 18);
+    mOff[2] = createVector(11, 43);
+    mOff[3] = createVector(17, 38);
+    mOff[4] = createVector(12, 40);
+    mOff[5] = createVector(15, 42);
+    mOff[6] = createVector(12, 42);
+    mOff[7] = createVector(23, 39);
+    mOff[8] = createVector(10, 40);
+    mOff[9] = createVector(16, 40);
+    mOff[10] = createVector(23, 40);
+    mOff[11] = createVector(7.5, 35);
+    mOff[12] = createVector(14.25, 37);
+    mOff[13] = createVector(14.25, 35);
+    mOff[14] = createVector(14.25, 40);
+    mOff[15] = createVector(17, 42);
+
+    //this.hairPic = 12; //0-10
+    hOff[0] = createVector(-2.5, -6);
+    hOff[1] = createVector(-2.5, -6);
+    hOff[2] = createVector(4, -20);
+    hOff[3] = createVector(-6, -4);
+    hOff[4] = createVector(7.5, -1);
+    hOff[5] = createVector(-5, -11.2);
+    hOff[6] = createVector(-32, -12);
+    hOff[7] = createVector(-5, -18);
+    hOff[8] = createVector(5, -1);
+    hOff[9] = createVector(-4, -10);
+    hOff[10] = createVector(-5, -13.5);
+    hOff[11] = createVector(-40, -48);
+    hOff[12] = createVector(27, -20);
   }
 
   copy() {
@@ -167,6 +172,13 @@ class Soldier {
     s.startCol = this.startCol;
     s.team = this.team;
 
+    s.facePic = this.facePic;
+    s.hairPic = this.hairPic;
+    s.mouthPic = this.mouthPic;
+    s.eyePic = this.eyePic;
+
+    s.memPhysics = this.memPhysics;
+    s.memTarget = this.memTarget;
     return s;
   }
 
@@ -204,117 +216,117 @@ class Soldier {
     if (this.pos.x > this.targetPos.x - 1 && this.pos.x < this.targetPos.x + 1 &&
       this.pos.y > this.targetPos.y - 1 && this.pos.y < this.targetPos.y + 1) {
       this.arrivedToBattle = true;
-    } else
-      this.arrivedToBattle = false;
+  } else
+  this.arrivedToBattle = false;
 
 
-    if (this.pos.x > this.awayPos.x - 10 && this.pos.x < this.awayPos.x + 10 &&
+  if (this.pos.x > this.awayPos.x - 10 && this.pos.x < this.awayPos.x + 10 &&
       this.pos.y > this.awayPos.y - 10 && this.pos.y < this.awayPos.y + 10) //
-    {
-      this.arrivedAway = true;
-      this.xp = 0;
+  {
+    this.arrivedAway = true;
+    this.xp = 0;
 
-      if (this.age == 11 && this.attack >= 10 && this.defence >= 10 && this.speed >= 10) {
-        this.xp = 15;
-      }
-    } else
-      this.arrivedAway = false;
-
-    if (this.arrivedAway && this.health == 0) {
-      this.lifeSpan = 0;
-      this.regenerate();
+    if (this.age == 11 && this.attack >= 10 && this.defence >= 10 && this.speed >= 10) {
+      this.xp = 15;
     }
+  } else
+  this.arrivedAway = false;
 
-    if (this.health == 0) {
-      this.alive = false;
-      this.battle.battleTime = 0;
+  if (this.arrivedAway && this.health == 0) {
+    this.lifeSpan = 0;
+    this.regenerate();
+  }
+
+  if (this.health == 0) {
+    this.alive = false;
+    this.battle.battleTime = 0;
+  }
+
+  if (this.alive)
+    this.seek(this.targetPos);
+  else {
+    this.seek(this.awayPos);
+  }
+
+  this.lifeSpan++;
+
+  if (this.lifeSpan % yearLength == 0 && this.alive) {
+    this.age++;
+
+    let reg = 2;
+    if (this.age >= 50 && this.age % 10 == 0) {
+      this.caps.x -= round(random(reg + 0.25));
+      this.caps.y -= round(random(reg / 2 + 0.25));
+      this.caps.z -= round(random(reg * 1.5 + 0.25));
+
+      if (this.caps.x < 0)
+        this.caps.x = 0;
+      if (this.caps.y < 0)
+        this.caps.y = 0;
+      if (this.caps.z < 0)
+        this.caps.z = 0;
+
+      ageP.push(new AgeP(this.pos.x + 28, this.pos.y));
     }
+  }
 
-    if (this.alive)
-      this.seek(this.targetPos);
-    else {
-      this.seek(this.awayPos);
-    }
+  if (this.age >= grandAgeThresh && this.killCount >= grandKillThresh)
+    this.grand = true;
+  else
+    this.grand = false;
 
-    this.lifeSpan++;
+  this.col = lerpColor(this.startCol, color(hue(this.startCol), 0, 255), map(this.age, this.startAge, grandAgeThresh, 0, 1));
 
-    if (this.lifeSpan % yearLength == 0 && this.alive) {
-      this.age++;
+  if (this.attack >= this.caps.x && this.defence >= this.caps.y && this.speed >= this.caps.z)
+    this.capped = true;
+  else
+    this.capped = false;
 
-      let reg = 2;
-      if (this.age >= 50 && this.age % 10 == 0) {
-        this.caps.x -= round(random(reg + 0.25));
-        this.caps.y -= round(random(reg / 2 + 0.25));
-        this.caps.z -= round(random(reg * 1.5 + 0.25));
+  if (this.attack > this.caps.x)
+    this.attack = this.caps.x;
+  if (this.defence > this.caps.y)
+    this.defence = this.caps.y;
+  if (this.speed > this.caps.z)
+    this.speed = this.caps.z;
 
-        if (this.caps.x < 0)
-          this.caps.x = 0;
-        if (this.caps.y < 0)
-          this.caps.y = 0;
-        if (this.caps.z < 0)
-          this.caps.z = 0;
+  this.threshs = Battle.getThreshs(this);
 
-        ageP.push(new AgeP(this.pos.x + 28, this.pos.y));
-      }
-    }
+  if (!this.team)
+    this.awayPos = createVector(random(this.targetPos.x - 100, this.targetPos.x + 100), -150);
+  else
+    this.awayPos = createVector(random(this.targetPos.x - 100, this.targetPos.x + 100), height + 150);
+}
 
-    if (this.age >= grandAgeThresh && this.killCount >= grandKillThresh)
-      this.grand = true;
-    else
-      this.grand = false;
+addForce(f) {
+  this.acc.add(f);
+}
 
-    this.col = lerpColor(this.startCol, color(hue(this.startCol), 0, 255), map(this.age, this.startAge, grandAgeThresh, 0, 1));
+incDamage(amount) {
+  this.health -= amount;
 
-    if (this.attack >= this.caps.x && this.defence >= this.caps.y && this.speed >= this.caps.z)
-      this.capped = true;
-    else
-      this.capped = false;
-
-    if (this.attack > this.caps.x)
-      this.attack = this.caps.x;
-    if (this.defence > this.caps.y)
-      this.defence = this.caps.y;
-    if (this.speed > this.caps.z)
-      this.speed = this.caps.z;
-
-    this.threshs = Battle.getThreshs(this);
+  if (this.health <= 0) {
+    this.health = 0;
+    this.alive = false;
 
     if (!this.team)
-      this.awayPos = createVector(random(this.targetPos.x - 100, this.targetPos.x + 100), -150);
+      scores.y++;
     else
-      this.awayPos = createVector(random(this.targetPos.x - 100, this.targetPos.x + 100), height + 150);
+      scores.x++;
   }
+}
 
-  addForce(f) {
-    this.acc.add(f);
-  }
+getNextHighest(players) {
+  let record = -30;
+  let next = null;
+  for (let s of players)
+    if ((this.team && s.team) || (!this.team && !s.team)) {
+      let sum = s.attack + s.defence + s.speed;
 
-  incDamage(amount) {
-    this.health -= amount;
-
-    if (this.health <= 0) {
-      this.health = 0;
-      this.alive = false;
-
-      if (!this.team)
-        scores.y++;
-      else
-        scores.x++;
-    }
-  }
-
-  getNextHighest(players) {
-    let record = -30;
-    let next = null;
-    for (let s of players)
-      if ((this.team && s.team) || (!this.team && !s.team)) {
-        let sum = s.attack + s.defence + s.speed;
-
-        if (sum > record && s != this && s.xp < 15 && !s.capped && s.alive) {
-          record = sum;
-          next = s;
-        }
+      if (sum > record && s != this && s.xp < 15 && !s.capped && s.alive) {
+        record = sum;
+        next = s;
       }
+    }
     return next;
   }
 
@@ -379,39 +391,58 @@ class Soldier {
     textSize(10);
 
     push();
-    translate(this.pos.x, this.pos.y);
+    translate(this.pos.x - 7, this.pos.y + 7);
+
+    fill(0);
+    if(this.alive)
+      stroke(this.team ? greenColor : redColor);
+    else
+      stroke(50);
+    rect(-30, -34, 130, 62, 90);
+    noStroke();
 
     this.showHealthBar();
     this.showProfile(this.graphicOff, this.barLength, barOff);
     this.showExtras();
     this.showAge(this.graphicOff, this.barLength, barOff);
+  pop();
+  this.showFace(this.pos.x, this.pos.y);
+}
 
-    // let dim = 3;
-    // let f = facePics[this.facePic];
-    // let e = eyePics[this.eyePic];
-    // let h = hairPics[this.hairPic];
-    // let m = mouthPics[this.mouthPic];
-    // let y = this.team ? -150 : 40;
-    // image(f, 0 + fOff[this.facePic].x, 25 + fOff[this.facePic].y + y, f.width / dim, f.height / dim);
+showFace(xPos, yPos) {
+  push();
+  translate(xPos - 60, yPos - 135);
+
+    let startDim = 3;
+    let dim = startDim;
+
+    let f = facePics[this.facePic];
+    let e = eyePics[this.eyePic];
+    let h = hairPics[this.hairPic];
+    let m = mouthPics[this.mouthPic];
+    let y = 20;
+
+    image(f, 0, 25 + y, f.width / dim, f.height / dim);
     
-    // if(this.eyePic == 11)
-    //   dim = 3.5;
-    // image(e, 0 + eOff[this.eyePic].x, 25 + eOff[this.eyePic].y + y, e.width / dim, e.height / dim);
-    // dim = 3;
-    // if (this.mouthPic == 1)
-    //   dim = 2.90;
-    // image(m, 0 + mOff[this.mouthPic].x, 25 + mOff[this.mouthPic].y + y, m.width / dim, m.height / dim);
+  if(this.eyePic == 11)
+     dim += 0.5;
+   image(e, 0 + eOff[this.eyePic].x, 25 + eOff[this.eyePic].y + y, e.width / dim, e.height / dim);
 
-    // dim = 3;
-    // if (this.hairPic == 3 || this.hairPic == 5)
-    //   dim = 2.5;
-    // image(h, 0 + hOff[this.hairPic].x, 25 + hOff[this.hairPic].y + y, h.width / dim, h.height / dim);
-    pop();
-  }
+   dim = startDim;
+  if (this.mouthPic == 1)
+    dim -= 0.1;
+  image(m, 0 + mOff[this.mouthPic].x, 25 + mOff[this.mouthPic].y + y, m.width / dim, m.height / dim);
 
-  showBase() {
-    noFill();
+  dim = startDim;
+  if (this.hairPic == 3 || this.hairPic == 5)
+    dim -= 0.5;
+  image(h, 0 + hOff[this.hairPic].x, 25 + hOff[this.hairPic].y + y, h.width / dim, h.height / dim);
 
+  pop();
+}
+
+showBase() {
+  noFill();
     if (!this.team) //
     {
       if (!this.myTurn)
@@ -422,16 +453,10 @@ class Soldier {
       if (!this.myTurn)
         stroke(greenColor);
       else
-        stroke(15);
+        stroke(0);
     }
-    circle(this.targetPos.x + 28, this.targetPos.y, 120);
 
-    noStroke();
-    if (this.arrivedToBattle)
-      fill(2);
-    else
-      fill(15);
-    rect(this.targetPos.x, this.targetPos.y, 25, 25);
+    circle(this.targetPos.x + 28, this.targetPos.y, 145);
 
     noStroke();
     textSize(12);
@@ -454,8 +479,10 @@ class Soldier {
   showExtras() {
     noStroke();
 
-    fill(lerpColor(this.startCol, color(hue(this.startCol), 0, 255),
-      constrain(map(this.xp, 5, 15, 0, 1), 0, 1)));
+  if(this.alive)
+    fill(lerpColor(this.startCol, color(hue(this.startCol), 0, 255), constrain(map(this.xp, 5, 15, 0, 1), 0, 1)));
+  else
+    fill(50);
 
     if (this.xp != 0)
       text('XP: ' + this.xp, 40, -15);
@@ -464,17 +491,17 @@ class Soldier {
     noStroke();
 
     if (this.attUpgrade > 1.0) {
-      fill(redColor);
+      fill(this.alive ? redColor : 50);
       circle(15, 17, 5);
     }
 
     if (this.defUpgrade > 1.0) {
-      fill(blueColor);
+      fill(this.alive ? blueColor : 50);
       circle(25, 17, 5);
     }
 
     if (this.spdUpgrade > 1.0) {
-      fill(yellowColor);
+      fill(this.alive ? yellowColor : 50);
       circle(35, 17, 5);
     }
   }
@@ -483,25 +510,27 @@ class Soldier {
     fill(0);
     circle(0, 5, 30);
 
-    fill(lerpColor(this.startCol, color(hue(this.startCol), 0, 255),
-      map(this.killCount, 0, grandKillThresh, 0, 1)));
+if(this.alive)
+    fill(lerpColor(this.startCol, color(hue(this.startCol), 0, 255), map(this.killCount, 0, grandKillThresh, 0, 1)));
+  else
+    fill(50);
 
     text(this.killCount, -12, 10);
 
-    fill(this.col);
+    fill(this.alive ? this.col : color(50));
     text(this.firstName + " " + this.lastName, x - 10, -1);
 
     strokeWeight(1);
-    stroke(redColor);
+    stroke(this.alive ? redColor : color(50));
     line(x, barOff, x + this.aPhysics.x * length, barOff);
 
-    stroke(blueColor);
+    stroke(this.alive ? blueColor : color(50));
     line(x, 2 * barOff, x + this.dPhysics.x * length, 2 * barOff);
 
-    stroke(yellowColor);
+    stroke(this.alive ? yellowColor : color(50));
     line(x, 3 * barOff, x + this.sPhysics.x * length, 3 * barOff);
 
-    stroke(60);
+    stroke(this.alive ? 60 : 50);
     line(x + length * 3, barOff, x + length * 3, 3 * barOff);
 
     stroke(0);
@@ -544,12 +573,17 @@ class Soldier {
       fill(0);
       text(this.age, 65, 10);
     } else {
-      fill(this.col);
+      fill(this.alive ? this.col : color(50));
       text(this.age, 65, 10);
     }
 
     noStroke();
-    fill(255, 0, 255, 255);
+
+    if(this.alive)
+      fill(255, 0, 255, 255);
+    else
+      fill(50);
+
     rect(x + length * 10 + 1, 1 * barOff - 1, constrain((this.caps.x - 10), -10, 0) * length - 1, 2);
     rect(x + length * 10 + 1, 2 * barOff - 1, constrain((this.caps.y - 10), -10, 0) * length - 1, 2);
     rect(x + length * 10 + 1, 3 * barOff - 1, constrain((this.caps.z - 10), -10, 0) * length - 1, 2);

@@ -37,51 +37,44 @@ let squadNukeCount = 0;
 let grandAgeThresh = 70;
 let grandKillThresh = 100;
 
-let nukeDef = 100;
+let nukeDef = 50;
 let nukeCooldown = nukeDef * 0.75;
 let yearLength = 500;
-let mouseCol = 0;
-let clickDist = 70;
 
 let facePics = [];
 let mouthPics = [];
 let hairPics = [];
 let eyePics = [];
-let fOff = [];
 let eOff = [];
 let hOff = [];
 let mOff = [];
 
+// score positioned on the ends of scorebuggy
 // weapons
 
 function preload() {
-  firstNames = loadStrings('\firstNames.txt');
-  lastNames = loadTable('\lastNames.csv', 'csv', 'header');
-  
-  // for(let i = 0; i < 11; i++) {
-  //   facePics.push( loadImage('pics/Faces/' + (i+'') +'.png') );
-  //   fOff.push(createVector());
-  // }
-     
-  // for(let i = 0; i < 16; i++) {
-  //   mouthPics.push( loadImage('pics/Mouths/' + (i+'') +'.png') );
-  //   mOff.push(createVector());
-  // }
-  
-  
-  // for(let i = 0; i < 11; i++) {
-  //   hairPics.push( loadImage('pics/Hair/' + (i+'') +'.png') );
-  //   hOff.push(createVector());
-  // }
-  
-  // for(let i = 0; i < 14; i++) {
-  //   eyePics.push( loadImage('pics/Eyes/' + (i+'') +'.png') );
-  //   eOff.push(createVector());
-  // }
+  firstNames = loadStrings('https://raw.githubusercontent.com/drewgriffith123/p5.js-code/master/Random%20Combat%20Sim/firstNames.txt');
+  lastNames = loadTable('https://raw.githubusercontent.com/drewgriffith123/p5.js-code/master/Random%20Combat%20Sim/lastNames.csv', 'csv', 'header');
+  loadImages();
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+
+  let spacing = windowWidth / (battleCount + 1);
+
+  for (let i = 0; i < players.length; i++)
+    players[i].targetPos = createVector(spacing/2 + (i % battleCount) * spacing, players[i].team ? height / 5 : height * 4 / 5);
+
+  //spacing/2 + i * spacing
+  for(let i = 0; i < battles.length; i++) {
+    battles[i].base1 = players[i].targetPos;
+    battles[i].base2 = players[i + battleCount].targetPos;
+  }
 }
 
 function setup() {
-  createCanvas(700, 600);
+  createCanvas(windowWidth, windowHeight);
   colorMode(HSB);
 
   critBounds = createVector(0.05, 0.50); //     A  -> 3-10
@@ -99,14 +92,16 @@ function setup() {
   squadBossPhysics = createVector(0, 0, 0);
   bossMotion = createVector(1, 1, 10);
 
-  for (let i = 0; i < battleCount; i++)
-    players.push(new Soldier(40 + i * 140, height / 4, false));
+  let spacing = width / (battleCount + 1);
 
   for (let i = 0; i < battleCount; i++)
-    players.push(new Soldier(40 + i * 140, height * 3 / 4, true));
+    players.push(new Soldier(spacing/2 + i * spacing, height / 5, false));
 
-  memorials.push(new Memorial(width - 140, 15, false));
-  memorials.push(new Memorial(width - 140, height - 60, true));
+  for (let i = 0; i < battleCount; i++)
+    players.push(new Soldier(spacing/2 + i * spacing, height * 4 / 5, true));
+
+  memorials.push(new Memorial(width - 140, 25, false));
+  memorials.push(new Memorial(width - 140, height - 50, true));
 
   for (let i = 0; i < battleCount; i++) {
     battles.push(new Battle(players[i].targetPos, players[i + battleCount].targetPos, players[i], players[i + battleCount]));
@@ -122,6 +117,13 @@ function setup() {
   }
 }
 
+function mouseClicked() {
+  for(let m of memorials)
+    if(mouseX > m.physics.x + width - 212)
+      m.collapsed = !m.collapsed;
+    
+}
+
 function draw() {
 
   let f = faster ? 10 : 1;
@@ -129,9 +131,27 @@ function draw() {
   {
     background(5);
 
-    stroke(255, 0.1);
-    line(0, height / 2 - clickDist, width, height / 2 - clickDist);
-    line(0, height / 2 + clickDist, width, height / 2 + clickDist);
+    fill( color(hue(redColor), saturation(redColor), 15) );
+    stroke(redColor);
+
+    beginShape();
+    let spacing = width / (battleCount-1);
+    vertex(spacing/6 - 20, height / 5 - 70);
+    vertex(4 * spacing - spacing/1.5 + 20, height / 5 - 70);
+    vertex(4 * spacing - spacing/1.5 - 20, height / 5 + 130);
+    vertex(spacing/6 + 20, height / 5 + 130);
+    endShape(CLOSE);
+
+    fill( color(hue(greenColor), saturation(greenColor), 15) );
+    stroke(greenColor);
+
+    beginShape();
+    spacing = width / (battleCount-1);
+    vertex(spacing/6 - 20, height * 4 / 5 + 70);
+    vertex(4 * spacing - spacing/1.5 + 20, height * 4 / 5 + 70);
+    vertex(4 * spacing - spacing/1.5 - 20, height * 4 / 5 - 130);
+    vertex(spacing/6 + 20, height * 4 / 5 - 130);
+    endShape(CLOSE);
 
     enemyBosses = 0;
     squadBosses = 0;
@@ -145,33 +165,33 @@ function draw() {
       if (s.xp >= 15 && s.pos.y < height / 2 && s.capped)
         enemyBosses++;
 
-    for (let s of players)
-      if (s.xp >= 15 && s.pos.y > height / 2 && s.capped)
-        squadBosses++;
+      for (let s of players)
+        if (s.xp >= 15 && s.pos.y > height / 2 && s.capped)
+          squadBosses++;
 
-    for (let b of battles)
-      if (!paused)
-        b.update();
+        for (let b of battles)
+          if (!paused)
+            b.update();
 
-    for (let s of players) {
-      if (!paused)
-        s.update();
-      for (let m of memorials)
-        m.testPromotion(s);
-    }
+          for (let s of players) {
+            if (!paused)
+              s.update();
+            for (let m of memorials)
+              m.testPromotion(s);
+          }
 
-    if (paused) {
-      fill(255);
-      noStroke();
-      textSize(32);
-      textFont('helvetica');
-      text('Paused', width / 2 - 50, height - 25);
-    }
+          if (paused) {
+            fill(255);
+            noStroke();
+            textSize(32);
+            textFont('helvetica');
+            text('Paused', width / 2 - 50, height - 25);
+          }
 
-    for (let i = particles.length - 1; i >= 0; i--)
-      if (particles[i].al <= 0)
-        particles.splice(i, 1);
-  }
+          for (let i = particles.length - 1; i >= 0; i--)
+            if (particles[i].al <= 0)
+              particles.splice(i, 1);
+          }
 
   for (let i = 0; i < 5; i++) //
   {
@@ -208,14 +228,6 @@ function draw() {
   enemyNukeCount = round(enemyNukeCount);
   squadNukeCount = round(squadNukeCount);
 
-  noStroke();
-  textSize(34);
-  fill(redColor);
-  text(enemyNukeCount, width / 2 - (enemyNukeCount + '').length * 15 + 5, 40);
-
-  fill(greenColor);
-  text(squadNukeCount, width / 2 - (squadNukeCount + '').length * 15 + 5, height - 15);
-
   doPhysics(enemyBossPhysics);
   doPhysics(squadBossPhysics);
 
@@ -243,18 +255,16 @@ function draw() {
     if (mouseIsPressed && mouseX > s.pos.x - 25 && mouseX < s.pos.x + 90 && mouseY > s.pos.y - 50 && mouseY < s.pos.y + 100)
       s.showInfo();
 
-  scoreBuggy.show();
+    scoreBuggy.show();
 
-  //if(mouseX > memorials[0].pos.x - 5 && mouseY < memorials[0].pos.y + 70)
-    memorials[0].show();
-  
-  //if(mouseX > memorials[1].pos.x - 5 && mouseY > memorials[1].pos.y - 15)
-    memorials[1].show();
+  memorials[0].updateSmooth();
+  memorials[1].updateSmooth();
+
+  memorials[0].show();
+  memorials[1].show();
 
   NukeP.clear();
   AgeP.clear();
-
-  mouseCol = constrain(int(mouseX / (width / battleCount)), 0, battleCount - 1);
 }
 
 function doPhysics(physicsVector) {
@@ -287,10 +297,10 @@ function spawnNuke(x, y, n) {
 
 function spawnNukes() {
   for (let i = 0; i < battleCount; i++)
-    spawnNuke(67 + i * 140, height / 4, int(random(5, 10 + 1)));
+    spawnNuke(battles[i].base1.x + 27, battles[i].base1.y, int(random(5, 10 + 1)));
 
   for (let i = 0; i < battleCount; i++)
-    spawnNuke(67 + i * 140, height * 3 / 4, int(random(5, 10 + 1)));
+    spawnNuke(battles[i].base2.x + 27, battles[i].base2.y, int(random(5, 10 + 1)));
 }
 
 function nuke() {
@@ -317,4 +327,78 @@ function cutFirstName(s) {
 
 function capLast(s) {
   return s.substring(0, 1) + s.substring(1).toLowerCase();
+}
+
+function rev(arr) {
+  let n = [];
+
+  for(let i = arr.length - 1; i >=0; i--)
+    n.push(arr[i]);
+  return n;
+}
+
+function loadImages() {
+ eyePics.push(loadImage('https://www.dropbox.com/s/3gel3q94hqh1im9/e13.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/bcrehup5jhuhwbk/e12.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/1n76nc5i39p2iu7/e11.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/40pjbn2ngyghjma/e10.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/aymk2xim60ch6f4/e9.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/30zvvq4sqhxdzzq/e8.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/n3uch62a1p7zvp6/e7.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/ngshdob493xldnx/e6.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/7g00erk7mf5l11q/e5.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/xazw8ynq6askydh/e4.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/o1tof0pacjrl46y/e3.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/v22rq8xvtcesj93/e2.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/bz7vloxg6ewudg7/e1.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/rpwg2ikyjwjwan7/e0.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+
+ facePics.push(loadImage('https://www.dropbox.com/s/22xvgyby7n5k9ii/f11.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/krb88tmh8kjvspo/f10.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/3gs7voi1e6l7u5a/f9.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/jdb34gas02jjhgd/f8.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/8laxcmv67er13ox/f7.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/6lijwfnljpmpnbc/f6.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/ptrfqzqq1uh7jjp/f5.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/y2vlp81tobaruqh/f4.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/84p5yr6qg0ido0v/f3.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/8utzyb6kn7jx14c/f2.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/ru3hngmzpr508n9/f1.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ facePics.push(loadImage('https://www.dropbox.com/s/0x5nw9qrq4rikmc/f0.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+
+ hairPics.push(loadImage('https://www.dropbox.com/s/v11ev22e323akjs/h12.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/bjuolcmqo3ld8fz/h11.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/4ev696oqfd8jrnp/h10.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/51aissvpocr30m3/h9.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/qi12x9m6d545mrs/h8.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/zk3275mrewztie8/h7.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/ypdfqh1u275yhi6/h6.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/u4jf2pig8bo9a4y/h5.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/kq144w4bgwsmfg4/h4.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/ub8lq0vh1l3j5hc/h3.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/hzzxwmlk6ky06fm/h2.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/fv84l7pd10u3v17/h1.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ hairPics.push(loadImage('https://www.dropbox.com/s/segvm2nmk1c7k4f/h0.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+
+ mouthPics.push(loadImage('https://www.dropbox.com/s/irff6iinevkiogt/m15.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/89n79e454qohaq2/m14.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/lg6on53ttd0yf91/m13.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/4n5w4ci4vdrvko5/m12.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/a4rgr6stycz76e1/m11.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/jx03fwosr0nt2ir/m10.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/0oyo0dm42nxv3uc/m9.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/0zsfxz1hzbwjhje/m8.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/z4lkkfvq92jptdj/m7.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/9bquhnrpn190gg1/m6.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/ttma99agijxhs9f/m5.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/7yzbitpute5zcvo/m4.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/mrhcqm9riz33rqr/m3.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/uffidtwzzkyj7xs/m2.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/625wvr2p0zcakdp/m1.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ mouthPics.push(loadImage('https://www.dropbox.com/s/at3wfba0210vgq0/m0.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+
+ eyePics = rev(eyePics);
+ hairPics = rev(hairPics);
+ mouthPics = rev(mouthPics);
+ facePics = rev(facePics);
 }

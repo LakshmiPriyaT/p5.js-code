@@ -17,21 +17,33 @@ class ScoreBuggy {
   }
 
   show() {
-    this.tx = constrain(map((scores.x - scores.y), -nukeDef, nukeDef, 0, width), 15, width - 15);
+    let start = battles[0].base1.x - 30;
+    let end = battles[battles.length-1].base1.x + 100;
+
+    this.tx = constrain(map((scores.x - scores.y), -nukeDef, nukeDef, start, end), start, end);
 
     smoothFollow(this.tx, this.physics, this.motion);
     this.update();
     
-    let h = lerpColor(greenColor, redColor, this.physics.x / width);
+    let h = lerpColor(greenColor, redColor, this.physics.x / end);
     
+
+    noStroke();
+    textSize(34);
+    fill(redColor);
+    text(enemyNukeCount, end + 17, height/2 + 11.5);
+
+    fill(greenColor);
+    text(squadNukeCount, start - (squadNukeCount + '').length * 16 - 25, height/2 + 11.5);
+
     //middle line
     strokeWeight(1);
     stroke(60);
-    line(width / 2, height / 2 - 15, width / 2, height / 2 + 15);
+    line( (start + end)/2, height / 2 - 15, (start + end)/2, height / 2 + 15);
     
     strokeWeight(2);
     stroke(h);
-    line(10, height / 2, width - 10, height / 2);
+    line(start, height / 2, end - 10, height / 2);
 
     noStroke();
 
@@ -59,7 +71,11 @@ class ScoreBuggy {
 
     noStroke();
     fill(h);
-    arc(this.physics.x, height / 2, 18, 18, 0, map(cooldownKills, 0, nukeCooldown, 0, TWO_PI));
+
+    if(cooldownKills >= nukeCooldown) 
+        circle(this.physics.x, height / 2, 18); 
+    else
+        arc(this.physics.x, height / 2, 18, 18, 0, map(cooldownKills, 0, nukeCooldown, 0, TWO_PI));
   }
 
 }
