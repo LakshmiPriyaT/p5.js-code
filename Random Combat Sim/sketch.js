@@ -34,11 +34,11 @@ let cooldownKills = 0;
 let enemyNukeCount = 0;
 let squadNukeCount = 0;
 
-let grandAgeThresh = 70;
+let grandAgeThresh = 50;
 let grandKillThresh = 100;
 
 let nukeDef = 50;
-let nukeCooldown = nukeDef * 0.75;
+let nukeCooldown = 50;//nukeDef * 0.75;
 let yearLength = 500;
 
 let facePics = [];
@@ -49,7 +49,10 @@ let eOff = [];
 let hOff = [];
 let mOff = [];
 
-// score positioned on the ends of scorebuggy
+let backX = 0;
+let backY = 0;
+
+// aviators, sunglasses
 // weapons
 
 function preload() {
@@ -126,10 +129,16 @@ function mouseClicked() {
 
 function draw() {
 
+  drawWater(70, backX, backY);
+//background(5);
+  backX += map(scoreBuggy.physics.x, scoreBuggy.start, scoreBuggy.end, 0.5, -0.5);
+  backY += map(scoreBuggy.physics.x, scoreBuggy.start, scoreBuggy.end, -0.075, 0.075) + 0.01;
+
+  fill(255);
+  text(frameRate(), 10, 10);
   let f = faster ? 10 : 1;
   for (let i = 0; i < f; i++) //
   {
-    background(5);
 
     fill( color(hue(redColor), saturation(redColor), 15) );
     stroke(redColor);
@@ -138,8 +147,8 @@ function draw() {
     let spacing = width / (battleCount-1);
     vertex(spacing/6 - 20, height / 5 - 70);
     vertex(4 * spacing - spacing/1.5 + 20, height / 5 - 70);
-    vertex(4 * spacing - spacing/1.5 - 20, height / 5 + 130);
-    vertex(spacing/6 + 20, height / 5 + 130);
+    vertex(4 * spacing - spacing/1.5 - 20, height / 5 + 150);
+    vertex(spacing/6 + 20, height / 5 + 150);
     endShape(CLOSE);
 
     fill( color(hue(greenColor), saturation(greenColor), 15) );
@@ -149,8 +158,8 @@ function draw() {
     spacing = width / (battleCount-1);
     vertex(spacing/6 - 20, height * 4 / 5 + 70);
     vertex(4 * spacing - spacing/1.5 + 20, height * 4 / 5 + 70);
-    vertex(4 * spacing - spacing/1.5 - 20, height * 4 / 5 - 130);
-    vertex(spacing/6 + 20, height * 4 / 5 - 130);
+    vertex(4 * spacing - spacing/1.5 - 20, height * 4 / 5 - 150);
+    vertex(spacing/6 + 20, height * 4 / 5 - 150);
     endShape(CLOSE);
 
     enemyBosses = 0;
@@ -237,15 +246,15 @@ function draw() {
   for (let s of players)
     s.showBase();
 
+  for (let p of ageP)
+    p.show();
+
   for (let s of players) {
     s.updateSmooth();
     s.show();
   }
 
   for (let p of particles)
-    p.show();
-
-  for (let p of ageP)
     p.show();
 
   for (let i = nukeP.length - 1; i >= 0; i--)
@@ -265,6 +274,25 @@ function draw() {
 
   NukeP.clear();
   AgeP.clear();
+}
+
+function drawWater(res, x2, y2, density = 0.1) { 
+  var xoff = 0.0;
+  for (var x = 0; x <= width + res; x += res) {
+    var yoff = 10000.0;
+    for (var y = 0; y <= height + res; y += res) {
+      var bright = map(noise(xoff + x2, yoff + y2), 0, 1, 0, 20);
+      noStroke();
+
+      fill(lerpColor( color(hue(greenColor), map(abs(scores.x-scores.y), 0, nukeDef, 0, 255), bright) , color(hue(redColor),  map(abs(scores.x-scores.y), 0, nukeDef, 0, 255), bright), scoreBuggy.physics.x / (scoreBuggy.end - scoreBuggy.start)));
+
+      rect(x, y, res, res);
+      yoff += density;
+    }
+    xoff += density;
+  }
+  x2 += 0.005;
+  y2 += 0.0025;
 }
 
 function doPhysics(physicsVector) {
@@ -338,6 +366,7 @@ function rev(arr) {
 }
 
 function loadImages() {
+ eyePics.push(loadImage('https://www.dropbox.com/s/2aaz1efxq920vt6/e14.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
  eyePics.push(loadImage('https://www.dropbox.com/s/3gel3q94hqh1im9/e13.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
  eyePics.push(loadImage('https://www.dropbox.com/s/bcrehup5jhuhwbk/e12.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
  eyePics.push(loadImage('https://www.dropbox.com/s/1n76nc5i39p2iu7/e11.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));

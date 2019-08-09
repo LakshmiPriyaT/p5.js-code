@@ -62,13 +62,13 @@ class Battle {
       if (scores.x > scores.y && enemyBosses >= 3) {
         nuke();
         nuked = true;
-        squadNukeCount += 1;
+        enemyNukeCount += 1;
         scores = createVector();
       }
       if (scores.y > scores.x && squadBosses >= 3) {
         nuke();
         nuked = true;
-        enemyNukeCount += 1;
+        squadNukeCount += 1;
         scores = createVector();
       }
     }

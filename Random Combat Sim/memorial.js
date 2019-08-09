@@ -34,13 +34,12 @@ class Memorial {
 
       for (let i = 0; i < this.soldiers.length; i++) //
       {
-        if (!this.contains(soldier) && soldier.killCount > this.soldiers[i].killCount &&
-          this.soldiers[i].startCol == s.startCol && this.soldiers[i].team == s.team) {
+        if (!this.contains(soldier) && soldier.killCount > this.soldiers[i].killCount && soldier.team == s.team) {
           this.soldiers[i] = soldier.copy();
           return;
         }
 
-        if (this.contains(soldier) && this.soldiers[i].startCol == soldier.startCol && this.soldiers[i].team == soldier.team) {
+        if (this.contains(soldier) && soldier.startCol == this.soldiers[i].startCol && soldier.firstName == this.soldiers[i].firstName && soldier.team == this.soldiers[i].team) {
           this.soldiers[i] = soldier.copy();
           return;
         }
@@ -84,9 +83,9 @@ class Memorial {
   }
 
   swap(one, two) {
-    let three = this.soldiers[two];
-    this.soldiers[two] = this.soldiers[one];
-    this.soldiers[one] = three;
+    let three = this.soldiers[two].copy();
+    this.soldiers[two] = this.soldiers[one].copy();
+    this.soldiers[one] = three.copy();
   }
 
   getGreatest(startIndex) {

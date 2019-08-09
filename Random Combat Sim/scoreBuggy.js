@@ -4,6 +4,9 @@ class ScoreBuggy {
 
     this.physics = createVector(width/2, 0, 0);
     this.motion = createVector(12, 3, 150);
+	
+    this.start = battles[0].base1.x - 30;
+    this.end = battles[battles.length-1].base1.x + 100;
   }
 
   update() {
@@ -17,33 +20,33 @@ class ScoreBuggy {
   }
 
   show() {
-    let start = battles[0].base1.x - 30;
-    let end = battles[battles.length-1].base1.x + 100;
+    this.start = battles[0].base1.x - 30;
+    this.end = battles[battles.length-1].base1.x + 100;
 
-    this.tx = constrain(map((scores.x - scores.y), -nukeDef, nukeDef, start, end), start, end);
+    this.tx = constrain(map((scores.x - scores.y), -nukeDef, nukeDef, this.start, this.end), this.start, this.end);
 
     smoothFollow(this.tx, this.physics, this.motion);
     this.update();
     
-    let h = lerpColor(greenColor, redColor, this.physics.x / end);
+    let h = lerpColor(greenColor, redColor, this.physics.x / this.end);
     
 
     noStroke();
     textSize(34);
     fill(redColor);
-    text(enemyNukeCount, end + 17, height/2 + 11.5);
+    text(enemyNukeCount, this.end + 17, height/2 + 11.5);
 
     fill(greenColor);
-    text(squadNukeCount, start - (squadNukeCount + '').length * 16 - 25, height/2 + 11.5);
+    text(squadNukeCount, this.start - (squadNukeCount + '').length * 16 - 25, height/2 + 11.5);
 
     //middle line
     strokeWeight(1);
     stroke(60);
-    line( (start + end)/2, height / 2 - 15, (start + end)/2, height / 2 + 15);
+    line( (this.start + this.end)/2, height / 2 - 15, (this.start + this.end)/2, height / 2 + 15);
     
     strokeWeight(2);
     stroke(h);
-    line(start, height / 2, end - 10, height / 2);
+    line(this.start, height / 2, this.end - 10, height / 2);
 
     noStroke();
 

@@ -11,10 +11,18 @@ class Soldier {
 
     this.grand = false;
     this.team = team;
+
+    this.facePic = int(random(facePics.length));
+    this.hairPic = int(random(hairPics.length));
+    this.mouthPic = int(random(mouthPics.length));
+    this.eyePic = int(random(eyePics.length));
+
     this.regenerate();
   }
 
   regenerate() {
+	if(this.grand)
+	  print(this.killCount, this.age);
     if (this.grand && (this.battle != null && this.battle != undefined && !this.battle.nuked)) //
     { // grand
       this.firstName = Soldier.generateFirstName();
@@ -24,6 +32,8 @@ class Soldier {
       this.defence = 10;
       this.speed = 10;
       this.xp = 15;
+
+      this.hairPic = int(random(hairPics.length));
 
       this.grand = false;
     } else //
@@ -36,6 +46,11 @@ class Soldier {
       this.speed = constrain(round(randomGaussian(4, 3)), 0, 10);
       this.col = color(random(60, 200), 255, 255);
       this.xp = 0;
+
+      this.facePic = int(random(facePics.length));
+      this.hairPic = int(random(hairPics.length));
+      this.mouthPic = int(random(mouthPics.length));
+      this.eyePic = int(random(eyePics.length));
     }
 
     this.startCol = this.col;
@@ -103,12 +118,7 @@ class Soldier {
       this.memMotion = createVector(2, 1, 25);
       this.memTarget = 0;
 
-      this.facePic = int(random(facePics.length));
-      this.hairPic = int(random(hairPics.length));
-      this.mouthPic = int(random(mouthPics.length));
-      this.eyePic = int(random(eyePics.length));
-
-    //this.eyePic = 11; //0-9
+    //this.eyePic = 14; //0-9
     eOff[0] = createVector(13, 18);
     eOff[1] = createVector(18, 18);
     eOff[2] = createVector(13, 4);
@@ -123,6 +133,7 @@ class Soldier {
     eOff[11] = createVector(7, 20);
     eOff[12] = createVector(9, 23);
     eOff[13] = createVector(0, 23);
+    eOff[14] = createVector(5, 23);
 
     //this.mouthPic = 1; //0-10
     mOff[0] = createVector(12, 40);
@@ -171,6 +182,7 @@ class Soldier {
     s.killCount = this.killCount;
     s.startCol = this.startCol;
     s.team = this.team;
+    s.grand = this.grand;
 
     s.facePic = this.facePic;
     s.hairPic = this.hairPic;
@@ -398,6 +410,8 @@ getNextHighest(players) {
       stroke(this.team ? greenColor : redColor);
     else
       stroke(50);
+
+    strokeWeight(1);
     rect(-30, -34, 130, 62, 90);
     noStroke();
 
@@ -436,8 +450,8 @@ showFace(xPos, yPos) {
   dim = startDim;
   if (this.hairPic == 3 || this.hairPic == 5)
     dim -= 0.5;
-  image(h, 0 + hOff[this.hairPic].x, 25 + hOff[this.hairPic].y + y, h.width / dim, h.height / dim);
 
+  image(h, 0 + hOff[this.hairPic].x, 25 + hOff[this.hairPic].y + y, h.width / dim, h.height / dim);
   pop();
 }
 
