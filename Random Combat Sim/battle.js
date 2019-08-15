@@ -21,7 +21,7 @@ class Battle {
     this.winR = 0;
 
     this.battleTime = 0;
-    this.freq = 1;
+    this.freq = 5;
   }
 
   update() {

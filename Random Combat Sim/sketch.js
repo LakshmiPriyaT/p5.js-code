@@ -130,13 +130,13 @@ function mouseClicked() {
 function draw() {
 
   drawWater(70, backX, backY);
-//background(5);
+    //background(5);
   backX += map(scoreBuggy.physics.x, scoreBuggy.start, scoreBuggy.end, 0.5, -0.5);
   backY += map(scoreBuggy.physics.x, scoreBuggy.start, scoreBuggy.end, -0.075, 0.075) + 0.01;
 
   fill(255);
   text(frameRate(), 10, 10);
-  let f = faster ? 10 : 1;
+  let f = faster ? int(map(frameRate(), 10, 55, 3, 15)) : 1;
   for (let i = 0; i < f; i++) //
   {
 
@@ -284,7 +284,9 @@ function drawWater(res, x2, y2, density = 0.1) {
       var bright = map(noise(xoff + x2, yoff + y2), 0, 1, 0, 20);
       noStroke();
 
-      fill(lerpColor( color(hue(greenColor), map(abs(scores.x-scores.y), 0, nukeDef, 0, 255), bright) , color(hue(redColor),  map(abs(scores.x-scores.y), 0, nukeDef, 0, 255), bright), scoreBuggy.physics.x / (scoreBuggy.end - scoreBuggy.start)));
+      fill(lerpColor( color(hue(greenColor), 
+            map(abs(scores.x-scores.y), 0, nukeDef, 0, 255), bright) , color(hue(redColor),  
+            map(abs(scores.x-scores.y), 0, nukeDef, 0, 255), bright), scoreBuggy.physics.x / (scoreBuggy.end - scoreBuggy.start)));
 
       rect(x, y, res, res);
       yoff += density;
@@ -380,7 +382,7 @@ function loadImages() {
  eyePics.push(loadImage('https://www.dropbox.com/s/o1tof0pacjrl46y/e3.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
  eyePics.push(loadImage('https://www.dropbox.com/s/v22rq8xvtcesj93/e2.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
  eyePics.push(loadImage('https://www.dropbox.com/s/bz7vloxg6ewudg7/e1.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
- eyePics.push(loadImage('https://www.dropbox.com/s/rpwg2ikyjwjwan7/e0.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
+ eyePics.push(loadImage('https://www.dropbox.com/s/m907uf2wlr19j8a/e0.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
 
  facePics.push(loadImage('https://www.dropbox.com/s/22xvgyby7n5k9ii/f11.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));
  facePics.push(loadImage('https://www.dropbox.com/s/krb88tmh8kjvspo/f10.png?dl=0'.replace('www.dropbox.com', 'dl.dropboxusercontent.com')));

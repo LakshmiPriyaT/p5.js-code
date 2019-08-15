@@ -254,10 +254,12 @@ class Soldier {
     this.battle.battleTime = 0;
   }
 
-  if (this.alive)
-    this.seek(this.targetPos);
+  if (this.alive){
+    if(abs(this.pos.x - this.targetPos.x) != 0 && abs(this.pos.y - this.targetPos.y) != 0)
+        this.seek(this.targetPos);
+  }
   else {
-    this.seek(this.awayPos);
+        this.seek(this.awayPos);
   }
 
   this.lifeSpan++;
