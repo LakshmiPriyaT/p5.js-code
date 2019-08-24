@@ -65,7 +65,7 @@ class Hermit extends Fish {
   }
 
   getClosestFood(foodArr) {
-    let minDistance = 100000000;
+    let minDistance = Infinity;
     let closestFood = null;
 
     for (let i = 0; i < foodArr.length; i++) {
@@ -79,7 +79,7 @@ class Hermit extends Fish {
 
         this.lifeSpan = this.lifeSpan <= 100 ? this.lifeSpan + foodArr[i].value : 100;
         foodArr.splice(i, 1);
-        minDistance = 100000000;
+        minDistance = Infinity;
         closestFood = null;
         i = 0;
       } else if (abs(dMe) < minDistance && abs(dInit) < sq(this.radius)) {

@@ -6,21 +6,21 @@ let foodCount = 100;
 let iterations = 1, fastForward = 2, jump = 1;
 let sharkCount = 0, hermitCount = 0, bombCount = 0;
 
-let maxForceCap = 2, maxSpeedCap = 10, eatDistanceCap = 5;
+let maxForceCap = 3, maxSpeedCap = 20, eatDistanceCap = 5;
 let sharksToFishRatio = 15;
-let hermitsToFishRatio = 50;
-let bombsToFishRatio = 80;
+let hermitsToFishRatio = 40;
+let bombsToFishRatio = 60;
 let borderW;
 let optimized = false;
 
-let res = 50, x2 = 0, y2 = 0, x3 = 0, y3 = 0;
+let res = 100, x2 = 0, y2 = 0, x3 = 0, y3 = 0;
 let density = 0.1;
 
 let highScore = 0;
 let winAmount = 300;
 
 function setup() {
-  createCanvas(750, 650);
+  createCanvas(windowWidth, windowHeight);
 
   borderW = height / 8;
   
@@ -41,7 +41,7 @@ function setup() {
   	bubbles.push(new Bubble());
   
   let randomness = 5;
-  let density = 10;
+  let density = 25;
   for(let i = -density; i < width + density; i += density) {
     let r = random(width);
     let n = noise(r / 50);
@@ -78,7 +78,7 @@ function mousePressed() {
 }
 
 function keyPressed() {
-  if (keyCode == DOWN_ARROW && fd.length >= 0)
+  if (keyCode == DOWN_ARROW && fd.length >= 3)
     decreaseFood(floor(fd.length / 4));
     
   if (keyCode == 32) { // [SPACE]
@@ -94,6 +94,9 @@ function keyPressed() {
 }
 
 function draw() {
+
+  manageFood();
+  
   if(optimized || faster)
   	background(137, 255, 25);
   else
@@ -110,7 +113,9 @@ function draw() {
     fastForward += 1;
   else if (keyIsDown(LEFT_ARROW))
     fastForward -= 1;
-  fastForward = constrain(fastForward, 1, 1000);
+
+  fastForward = map(frameRate(), 30, 60, 1, 50);
+  fastForward = constrain(fastForward, 1, 50);
 
   if (looping == false)
     noLoop();
@@ -133,7 +138,7 @@ function draw() {
 
     Shark.managePopulation();		
     Hermit.managePopulation();
-	Bomb.managePopulation();
+	  Bomb.managePopulation();
     
     Shark.applyAllForces();
     Hermit.applyAllForces();
@@ -141,7 +146,9 @@ function draw() {
     manageFood();
     
     Fish.removeDead(fish);
-	Fish.applyAllForces(0.007, 0.033); // applyAllForces(reproduction_chance, mutation_chance)
+	  Fish.applyAllForces(0.007, 0.033); // applyAllForces(reproduction_chance, mutation_chance)
+
+    manageFood();
   }
 
   if(!faster && !optimized) { // manage particles

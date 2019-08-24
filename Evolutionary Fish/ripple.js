@@ -16,7 +16,7 @@ class Ripple {
   show() {
     this.managePop(ripples);
     this.r += this.speed;
-    this.al -= 0.3;
+    this.al -= map(frameRate(), 30, 60, 1, 0.3);
 
     fill(hue(this.col), saturation(this.col), 255, this.al);
     stroke(this.col, 255, 255, this.al * 2);

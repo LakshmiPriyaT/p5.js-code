@@ -26,8 +26,8 @@ function mouseReleased() {
 function draw() {
 	background(0);
 
-	barriers[0].a = createVector(mouseX, mouseY);
-	barriers[0].b = createVector(mouseX - 10, mouseY - 20);
+	//barriers[0].a = createVector(mouseX, mouseY);
+	//barriers[0].b = createVector(mouseX - 10, mouseY - 20);
 
 	if(keyIsPressed){
 		if(keyCode === LEFT_ARROW)
@@ -54,7 +54,7 @@ function draw() {
 		launcher.updateBow();
 		launcher.show();
 
-		launcher.showOptimal(barriers[0]);
+		//launcher.showOptimal(barriers[0]);
 	}
 
 	for(let b of barriers){

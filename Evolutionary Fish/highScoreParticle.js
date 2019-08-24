@@ -9,7 +9,7 @@ class HighScoreParticle {
   }
 
   update() {
-    this.al -= 15;
+    this.al -= map(frameRate(), 30, 60, 30, 15);
     let v = p5.Vector.fromAngle(this.angle);
     v.mult(this.speed);
     this.pos.add(v);

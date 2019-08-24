@@ -37,8 +37,8 @@ let squadNukeCount = 0;
 let grandAgeThresh = 50;
 let grandKillThresh = 100;
 
-let nukeDef = 50;
-let nukeCooldown = 50;//nukeDef * 0.75;
+let nukeDef = 500;
+let nukeCooldown = 300;//nukeDef * 0.75;
 let yearLength = 500;
 
 let facePics = [];

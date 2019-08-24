@@ -13,7 +13,7 @@ class DeathParticle {
   }
 
   run(pop) {
-    this.lifeSpan--;
+    this.lifeSpan -= map(frameRate(), 30, 60, 3, 1);
     this.pos.add(this.vel);
     this.pos.add(p5.Vector.random2D().setMag(this.roughness));
     this.vel.x += random(-this.strength, this.strength);

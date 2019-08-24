@@ -21,3 +21,21 @@ function smoothFollow(targetNum, physicsVector, motionVector) {
 
   physicsVector.z += steer;
 }
+
+function smoothFollow2D(object, targetPos, physicsVector, motionVector) {
+    let target = targetPos;
+
+    let desired = p5.Vector.sub(target, this.pos);
+    let d = desired.mag();
+    let speed = motionVector.x;
+
+    if (d < this.slowingRadius)
+      speed = map(d, 0, motionVector.z, 0, motionVector.x);
+
+    desired.setMag(speed);
+
+    let steer = p5.Vector.sub(desired, physicsVector.y);
+    steer.limit(motionVector.y);
+
+    object.addForce(steer);
+}

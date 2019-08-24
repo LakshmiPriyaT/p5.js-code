@@ -21,10 +21,8 @@ class Fish {
   }
 
   update() {
-    this.pos.add(this.vel);
-    this.vel.add(this.acc);
-    this.acc.mult(0);
-
+    doPhysics2D(this);
+    
     this.vel.limit(this.maxSpeed);
 
     this.angle = this.vel.heading();
@@ -56,13 +54,25 @@ class Fish {
 
   static applyAllForces(repChance, mutChance) {
     for (let i = fish.length - 1; i >= 0; i--) {
-      fish[i].forage(fd);
+      if(fish[i] == null || fish[i] == undefined)
+        return;
+
+      manageFood();
+
+      try{
+        let bite = fish[i].getClosestFood(fd).pos;
+        if(bite != null)
+        seek(fish[i], bite);
+      } catch(err) {}
+      
       fish[i].avoidOthers(fish);
       fish[i].avoidOthers(sharks);
       fish[i].avoidOthers(hermits);
       fish[i].update();
       fish[i].reproduce(fish, repChance, mutChance);
       fish[i].show();
+
+      manageFood();
     }
   }
 
@@ -129,13 +139,16 @@ class Fish {
         newFish.maxSpeed += this.maxSpeed < maxSpeedCap ? random(-3, 3) : 0;
         if (newFish.maxSpeed < 0)
           newFish.maxSpeed = 0;
+        newFish.maxSpeed = constrain(newFish.maxSpeed, 0, maxSpeedCap);
       }
+
       if (random() < mutChance) {
         mutated = true;
         newFish.slowingRadius += random(-10, 10);
         if (newFish.slowingRadius < 0)
           newFish.slowingRadius = 0;
       }
+
       if (random() < mutChance) {
         mutated = true;
         newFish.avoidForce += random(-1, 1);
@@ -145,9 +158,9 @@ class Fish {
       if (random() < mutChance) {
         mutated = true;
         newFish.eatDistance += this.eatDistance < eatDistanceCap ? random(-1, 1) : 0;
-
         if (newFish.eatDistance < 0)
           newFish.eatDistance = 0;
+        newFish.eatDistance = constrain(newFish.eatDistance, 0, eatDistanceCap);
       }
 
       if (random() < mutChance) {
@@ -155,12 +168,14 @@ class Fish {
         newFish.maxForce += this.maxForce < maxForceCap ? random(-0.5, 0.5) : 0;
         if (newFish.maxForce <= 0)
           newFish.maxForce = 0;
+        newFish.maxForce = constrain(newFish.maxForce, 0, maxForceCap);
       }
 
       if (mutated) {
         let hu = hue(this.col) <= 255 ? hue(this.col) : 0;
         newFish.col = color(hu + 30, 255, 255);
       }
+
       pool.push(newFish);
     }
   }
@@ -191,6 +206,7 @@ class Fish {
         closestFood = foodArr[i];
       }
     }
+    manageFood();
     return closestFood;
   }
 
@@ -211,25 +227,6 @@ class Fish {
         this.addForce(desired);
       }
     }
-  }
-
-  forage(foodArr) {
-    let bite = this.getClosestFood(foodArr);
-    if (!bite)
-      return;
-
-    let desired = p5.Vector.sub(bite.pos, this.pos);
-    let d = desired.mag();
-    let speed = this.maxSpeed;
-
-    if (d < this.slowingRadius)
-      speed = map(d, 0, this.slowingRadius, 0, this.maxSpeed);
-
-    desired.setMag(speed);
-
-    let steer = p5.Vector.sub(desired, this.vel);
-    steer.limit(this.maxForce);
-    this.addForce(steer);
   }
 
   show() {

@@ -23,7 +23,9 @@ class Shark extends Fish { //oppurtunity
   static applyAllForces() {
     for (let i = 0; i < sharks.length; i++) {
       let s = sharks[i];
-      s.forage(fish);
+      let bite = s.getClosestFood(fish).pos;
+      if(bite != null)
+        seek(s, bite);//s.forage(fish);
       s.avoidOthers(sharks);
       s.avoidOthers(hermits);
       s.update();

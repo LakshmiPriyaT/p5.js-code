@@ -14,7 +14,7 @@ class Launcher {
 		
 
 		this.bPhysics = createVector(0, 0, 0);
-		this.bMotion = createVector(5, 1, 27);
+		this.bMotion = createVector(12, 2, 43);
 		this.bowTarget = 0;
 
 		this.bowH = 100;
