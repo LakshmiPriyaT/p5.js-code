@@ -24,6 +24,7 @@ function setup() {
   for(let i = 0; i < 1; i++) {
     interactables.push(new Interactable(random(width/4, width*3/4), random(0, height), 'small', 200));
   }
+  interactables.push(new Interactable(interactables[0].pos.x + 200, interactables[0].pos.y + 25, 'small', 200));
 
   for(let i = 0; i < 5; i++) {
     player.addInventory( color(random(255), random(255), random(255)) );
@@ -44,7 +45,7 @@ function draw()
 
   for(let c of circles) {
 
-    if(abs(dist(player.truePos.x, player.truePos.y, c.x, c.y)) < 250)
+    if(abs(distSq(player.truePos.x, player.truePos.y, c.x, c.y)) < sq(250))
       fill(0, 0, 30);
     else
       fill(255, 0, 5);
@@ -61,6 +62,28 @@ function draw()
 
 }
 
+function mouseClicked() {
+
+  for(let i of interactables) {
+    let index = 0;
+    for(let r = 0; r < i.inventoryDim.y; r++)
+      for(let c = 0; c < i.inventoryDim.x; c++) {
+
+        let boxV = createVector(c * (70 + i.spacing) + 80, r * (70 + i.spacing) - 17);
+        i.offsets = createVector(width/2 - player.truePos.x, height/2 - player.truePos.y);
+        let boxDist = distSq(boxV.x + i.xOff + 70/2, boxV.y + 70/2, mouseX - i.pos.x - i.offsets.x, mouseY - i.pos.y - i.offsets.y);
+
+        if(boxDist < sq(30) && player.itemCount != player.inventorySize) {
+          player.addInventory(i.inventory[index]);
+          i.removeInventory(i.inventory[index]);
+          return;
+        }
+
+        index++;
+      }
+  }
+}
+
 function mousePressed() {
 for(let i of interactables) {
     i.offsets = createVector(width/2 - player.truePos.x, height/2 - player.truePos.y);
@@ -70,6 +93,10 @@ for(let i of interactables) {
     circle(i.pos.x, i.pos.y, 10);
     if(i.closeEnough && (mousePos.x > i.pos.x - i.dim.x/2 && mousePos.x < i.pos.x + i.dim.x/2 && mousePos.y > i.pos.y - i.dim.y/2 && mousePos.y < i.pos.y + i.dim.y/2)) {
       i.inventoryShowing = !i.inventoryShowing;
+
+      for(let j of interactables)
+        if(j != i && j.inventoryShowing)
+          j.inventoryShowing = false;
     }
   }
 }
@@ -80,7 +107,6 @@ function keyReleased()
     if (keyCode == RIGHT_ARROW || keyCode == 68){ right = 0; }
     if (keyCode == UP_ARROW || keyCode == 87) { up = 0; }
     if (keyCode == DOWN_ARROW || keyCode == 83){ down = 0; }
-
 }
 
 function keyPressed()
@@ -95,4 +121,8 @@ function keyPressed()
     if(key == 'x')
       player.removeInventory(player.inventory[player.itemCount - 1]);
   
+}
+
+function distSq(x1, y1, x2, y2) {
+  return sq(x2 - x1) + sq(y2 - y1);
 }

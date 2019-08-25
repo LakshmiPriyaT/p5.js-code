@@ -61,6 +61,8 @@ class Interactable {
 	}
 
 	show() {
+
+		push();
 		noStroke();
 		fill(200, 255, 255);
 		rect(this.pos.x, this.pos.y, this.dim.x, this.dim.y);
@@ -69,6 +71,7 @@ class Interactable {
 		
 		if(this.inventoryShowing)
 			this.showInventory();
+		pop();
 	}
 
 	showInventory() {
@@ -81,26 +84,33 @@ class Interactable {
 		translate(this.pos.x + this.xOff, this.pos.y);
 		rect(50, -50, 70 * (this.inventoryDim.x+1), 70 * (this.inventoryDim.x+1));
 
+		let index = 0;
 		for(let r = 0; r < this.inventoryDim.y; r++)
 			for(let c = 0; c < this.inventoryDim.x; c++) {
 
-				let spacing = 5;
-				let boxV = createVector(c * (70 + spacing) + 80, r * (70 + spacing) - 17);
+				this.spacing = 5;
+				let boxV = createVector(c * (70 + this.spacing) + 80, r * (70 + this.spacing) - 17);
 				this.offsets = createVector(width/2 - player.truePos.x, height/2 - player.truePos.y);
-				let boxDist = dist(boxV.x + this.xOff + 70/2, boxV.y + 70/2, mouseX - this.pos.x - this.offsets.x, mouseY - this.pos.y - this.offsets.y);
+				let boxDist = distSq(boxV.x + this.xOff + 70/2, boxV.y + 70/2, mouseX - this.pos.x - this.offsets.x, mouseY - this.pos.y - this.offsets.y);
 				stroke(0, 255, 255);
 
-				//line(mouseX - this.pos.x - this.xOff, mouseY - this.pos.y, width/2 - this.pos.x - this.xOff, height/2 - this.pos.y);
-				//line(0, 0, player.truePos.x - this.pos.x, player.truePos.y - this.pos.y);
-				//line(boxV.x + this.xOff, boxV.y , mouseX - this.pos.x - (width/2 - player.truePos.x), mouseY - this.pos.y - (height/2 - player.truePos.y));
 				fill(127/2);
 				stroke(90);
 				strokeWeight(2);
-				if(boxDist < 30)
+				if(boxDist < sq(30))
 					fill(30);
 				else
 					fill(127/2);
 				rect(boxV.x, boxV.y, 70, 70);
+
+				if(this.inventory[index]) {
+					ellipseMode(CENTER);
+					fill(this.inventory[index]);
+					circle(boxV.x + 70/2, boxV.y + 70/2, 15);
+					ellipseMode(CORNER);
+				}
+
+				index++;
 			}
 		pop();
 	}
